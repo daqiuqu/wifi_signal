@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_wifi_signal" default="compile.module.wifi_signal">
+  <dirname property="module.wifi_signal.basedir" file="${ant.file.module_wifi_signal}"/>
+  
+  <property name="module.jdk.home.wifi_signal" value="${jdk.home.android_api_19_platform}"/>
+  <property name="module.jdk.bin.wifi_signal" value="${jdk.bin.android_api_19_platform}"/>
+  <property name="module.jdk.classpath.wifi_signal" value="jdk.classpath.android_api_19_platform"/>
+  
+  <property name="compiler.args.wifi_signal" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="wifi_signal.output.dir" value="${module.wifi_signal.basedir}/out/production/wifi_signal"/>
+  <property name="wifi_signal.testoutput.dir" value="${module.wifi_signal.basedir}/out/test/wifi_signal"/>
+  
+  <path id="wifi_signal.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="wifi_signal.module.production.classpath">
+    <path refid="${module.jdk.classpath.wifi_signal}"/>
+  </path>
+  
+  <path id="wifi_signal.runtime.production.module.classpath">
+    <pathelement location="${wifi_signal.output.dir}"/>
+  </path>
+  
+  <path id="wifi_signal.module.classpath">
+    <path refid="${module.jdk.classpath.wifi_signal}"/>
+    <pathelement location="${wifi_signal.output.dir}"/>
+  </path>
+  
+  <path id="wifi_signal.runtime.module.classpath">
+    <pathelement location="${wifi_signal.testoutput.dir}"/>
+    <pathelement location="${wifi_signal.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.wifi_signal">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.wifi_signal">
+    <patternset refid="excluded.from.module.wifi_signal"/>
+  </patternset>
+  
+  <path id="wifi_signal.module.sourcepath">
+    <dirset dir="${module.wifi_signal.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.wifi_signal" depends="compile.module.wifi_signal.production,compile.module.wifi_signal.tests" description="Compile module wifi_signal"/>
+  
+  <target name="compile.module.wifi_signal.production" depends="register.custom.compilers" description="Compile module wifi_signal; production classes">
+    <mkdir dir="${wifi_signal.output.dir}"/>
+    <javac2 destdir="${wifi_signal.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.wifi_signal}/javac">
+      <compilerarg line="${compiler.args.wifi_signal}"/>
+      <bootclasspath refid="wifi_signal.module.bootclasspath"/>
+      <classpath refid="wifi_signal.module.production.classpath"/>
+      <src refid="wifi_signal.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.wifi_signal"/>
+    </javac2>
+    
+    <copy todir="${wifi_signal.output.dir}">
+      <fileset dir="${module.wifi_signal.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.wifi_signal.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.wifi_signal.tests" depends="register.custom.compilers,compile.module.wifi_signal.production" description="compile module wifi_signal; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.wifi_signal" description="cleanup module">
+    <delete dir="${wifi_signal.output.dir}"/>
+    <delete dir="${wifi_signal.testoutput.dir}"/>
+  </target>
+</project>
