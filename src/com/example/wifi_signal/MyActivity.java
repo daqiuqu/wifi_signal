@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
+import android.view.KeyEvent;
 import android.widget.TextView;
 //import android.widget.Toast;
 
@@ -44,16 +45,26 @@ public class MyActivity extends Activity {
         myHandler.post(wifiTimer);
     }
 
-	protected void onDestroy(Bundle savedInstanceState) {
-		myHandler.removeCallbacks(wifiTimer);
-	}
-
 	private Runnable wifiTimer = new Runnable() {
 		public void run() {
 			getWifiInfo();
 			myHandler.postDelayed(this, 1000);
 		}
 	};
+
+	private void exit_program() {
+		myHandler.removeCallbacks(wifiTimer);
+		System.out.println("have closed wifitimer and going to exit");
+        	finish();
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			exit_program();
+			return false;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	public void getWifiInfo() {
 		String wserviceName = Context.WIFI_SERVICE;
@@ -76,7 +87,7 @@ public class MyActivity extends Activity {
 		String otherwifi = "The existing network is: \n\n";
 		
 		for (ScanResult result : results) {  
-		    otherwifi += result.SSID  + ":" + result.level + " mac:" + result.BSSID + "\n";
+			otherwifi += result.SSID  + ":" + result.level + " mac:" + result.BSSID + "\n";
 		}
 		
 		String text = "We are connecting to " + ssid + " " + mac_connect + " at " + String.valueOf(speed) + "   " + String.valueOf(units) + ". Strength : " + strength;
