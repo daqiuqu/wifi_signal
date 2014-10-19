@@ -23,6 +23,9 @@ public class MyActivity extends Activity {
 	
 	TextView tv;
 	private Handler myHandler;
+	private String serverIP = null;
+	private client net = null;
+	boolean net_flag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,8 @@ public class MyActivity extends Activity {
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (net_flag)
+				net.close();
 			exit_program();
 			return false;
 		}
@@ -71,10 +76,16 @@ public class MyActivity extends Activity {
 		tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 		
 		List<ScanResult> results = wm.getScanResults();
-		String otherwifi = "The existing network is: \n\n";
+//		String otherwifi = "The existing network is: ";
+		String otherwifi = "";
+		otherwifi += "local mac:" + mac_connect;
 		
 		for (ScanResult result : results) {  
-			otherwifi += result.SSID  + ":" + result.level + " mac:" + result.BSSID + "\n";
+//			otherwifi += result.SSID  + ":" + result.level + " mac:" + result.BSSID + "\n";
+			otherwifi += result.SSID  + ":" + result.level + " mac:" + result.BSSID;
+		}
+		if (net_flag) {
+			net.send(otherwifi);
 		}
 		
 		String text = "We are connecting to " + ssid + " " + mac_connect + " at " + String.valueOf(speed) + "   " + String.valueOf(units) + ". Strength : " + strength;
@@ -103,12 +114,17 @@ public class MyActivity extends Activity {
 				.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Toast.makeText(MyActivity.this, "Your input is:" + serverIPEditText.getText(), Toast.LENGTH_SHORT).show();
+						serverIP = serverIPEditText.getText().toString();
+System.out.println("before new client");
+						net = new client(serverIP);
+System.out.println("after new client");
+						net_flag = true;
+						Toast.makeText(MyActivity.this, "Your input is:" + serverIP, Toast.LENGTH_SHORT).show();
+						System.out.println("input server ip is: " + serverIP);
 					}
 				}).setNegativeButton("Cancel", null).show();
 			System.out.println("click menu button");
 		}
 		return false;
 	}
-    
 }
