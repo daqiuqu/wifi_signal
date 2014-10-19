@@ -23,6 +23,8 @@ public class MyActivity extends Activity {
 	
 	TextView tv;
 	private Handler myHandler;
+	private String serverIP = null;
+	private client net = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,10 @@ public class MyActivity extends Activity {
 				.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Toast.makeText(MyActivity.this, "Your input is:" + serverIPEditText.getText(), Toast.LENGTH_SHORT).show();
+						serverIP = serverIPEditText.getText().toString();
+						net = new client(serverIP);
+						Toast.makeText(MyActivity.this, "Your input is:" + serverIP, Toast.LENGTH_SHORT).show();
+						System.out.println("input server ip is: " + serverIP);
 					}
 				}).setNegativeButton("Cancel", null).show();
 			System.out.println("click menu button");
